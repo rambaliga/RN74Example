@@ -18,16 +18,14 @@ jobs:
       java-version: 21
       distribution: temurin
 
-   - name: Grant execute permissions for gradlew
+   - name: Install yarn dependencies
+     run: yarn install 
+     
+   - name: Grant execute permissions for gradlew & run unit test
      run: |
       cd android
       chmod +x gradlew
-
-   - name: Install yarn dependencies
-     run: yarn install 
-
-   - name: Run unit tests
-     run: ./gradlew test
+      ./gradlew test
 
    - name: Assemble Release Bundle
      run: |
