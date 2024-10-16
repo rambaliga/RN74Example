@@ -44,7 +44,7 @@ jobs:
    - name: Run bash commands
      run: |
       ls -latr
-      cd app
+      cd src
       ls -latr
       
    - name: Upload signed aab
