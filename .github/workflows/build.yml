@@ -1,0 +1,60 @@
+name: Run Build
+
+on:
+ pull_request:
+  branches: [develop,main]
+
+jobs:
+ build:
+  runs-on: ubuntu-latest
+
+  steps:
+   - name : checkout
+     uses: actions/checkout@v4.2.1
+
+   - name: Setup Java JDK
+     uses: actions/setup-java@v4.4.0
+     with:
+      java-version: 21
+      distribution: temurin
+
+   - name: Install yarn dependencies
+     run: yarn install 
+     
+   - name: Grant execute permissions for gradlew & run unit test
+     run: |
+      cd android
+      chmod +x gradlew
+      # ./gradlew test
+      
+   - name: Assemble Release Bundle
+     run: |
+        cd android
+        ./gradlew bundleRelease
+   
+   # - name: Sign Release
+   #   uses: r0adkll/sign-android-release@v1
+   #   with:
+   #        releaseDirectory: app/build/outputs/bundle/release
+   #        signingKeyBase64: ${{ secrets.KEYSTORE }}
+   #        keyStorePassword: ${{ secrets.KEYSTORE_PASSWORD }}
+   #        alias: ${{ secrets.KEY_ALIAS }}
+   #        keyPassword: ${{ secrets.KEY_ALIAS_PASSWORD }}
+
+     
+   # - name: Upload signed aab
+   #   id: upload_aab
+   #   uses: actions/upload-artifact@v4.4.0
+   #   with:
+   #        name: signed-aab
+   #        path: app/build/outputs/bundle/release/app-release.aab
+
+   - name: Run bash commands
+     run: |
+       if [ "github.event_name == pull_request" ]; then
+        echo " build is successful"
+       else 
+        echo "Build failed"
+       fi
+
+
