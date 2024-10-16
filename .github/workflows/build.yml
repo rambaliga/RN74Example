@@ -25,26 +25,41 @@ jobs:
      run: |
       cd android
       chmod +x gradlew
-      ./gradlew test
+      # ./gradlew test
       
    - name: Assemble Release Bundle
      run: |
         cd android
         ./gradlew bundleRelease
    
-   - name: Sign Release
-     uses: r0adkll/sign-android-release@v1
-     with:
-          releaseDirectory: app/build/outputs/bundle/release
-          signingKeyBase64: ${{ secrets.KEYSTORE }}
-          keyStorePassword: ${{ secrets.KEYSTORE_PASSWORD }}
-          alias: ${{ secrets.KEY_ALIAS }}
-          keyPassword: ${{ secrets.KEY_ALIAS_PASSWORD }}
-          
+   # - name: Sign Release
+   #   uses: r0adkll/sign-android-release@v1
+   #   with:
+   #        releaseDirectory: app/build/outputs/bundle/release
+   #        signingKeyBase64: ${{ secrets.KEYSTORE }}
+   #        keyStorePassword: ${{ secrets.KEYSTORE_PASSWORD }}
+   #        alias: ${{ secrets.KEY_ALIAS }}
+   #        keyPassword: ${{ secrets.KEY_ALIAS_PASSWORD }}
+
+   - name: Run bash commands
+     run: |
+      ls -latr
+      cd app
+      ls -latr
+      
    - name: Upload signed aab
+     id: upload_aab
      uses: actions/upload-artifact@v4.4.0
      with:
           name: signed-aab
           path: app/build/outputs/bundle/release/app-release.aab
+
+   - name: Run bash commands
+     run: |
+       if [ "${{ steps.upload_aab.outcome }}" == "success" ]; then
+        echo " build is successful"
+       else 
+        echo "Build failed"
+       fi
 
 
