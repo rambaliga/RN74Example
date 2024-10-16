@@ -56,7 +56,7 @@ jobs:
 
    - name: Run bash commands
      run: |
-       if [ "${{ steps.upload_aab.outcome }}" == "success" ]; then
+       if [ "${{ steps.upload_aab.outcome }}" == "success" && "github.event_name == "pull_request""]; then
         echo " build is successful"
        else 
         echo "Build failed"
